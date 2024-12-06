@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "./CartSlice";
-
-function ProductList() {
+function ProductList(props) {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-  const [addedToCart, setAddedToCart] = useState({});
-
+  const [cart, setCart] = useState([]); // State to store the items added to the cart
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  console.log(cartItems);
+  // setCart(cartItems);
+  useEffect(() => {}, []);
+  const alreadyInCart = (itemName) => {
+    return cartItems.some((item) => item.name === itemName);
+  };
+  const handleAddToCart = (item) => {
+    console.log("clicked");
+    dispatch(addItem(item));
+  };
+  const totalItems = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
   const plantsArray = [
     {
       category: "Air Purifying Plants",
@@ -251,7 +265,7 @@ function ProductList() {
     },
   ];
   const styleObj = {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#4caf50",
     color: "#fff!important",
     padding: "15px",
     display: "flex",
@@ -281,29 +295,26 @@ function ProductList() {
   };
 
   const handleContinueShopping = (e) => {
+    console.log("clicked");
     e.preventDefault();
     setShowCart(false);
-  };
-
-  const handleAddToCart = (product) => {
-    dispatch(addItem(product));
-    setAddedToCart((prevState) => ({
-      ...prevState,
-      [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
-    }));
   };
   return (
     <div>
       <div className="navbar" style={styleObj}>
         <div className="tag">
-          <div className="luxury">
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={props.toLanding}
+            className="luxury"
+          >
             <img
               src="https://cdn.pixabay.com/photo/2020/08/05/13/12/eco-5465432_1280.png"
               alt=""
             />
-            <a href="/" style={{ textDecoration: "none" }}>
-              <div>
-                <h3 style={{ color: "white" }}>Paradise Nursery</h3>
+            <a style={{ textDecoration: "none" }}>
+              <div style={{ margin: "10px" }}>
+                <h3 style={{ color: "white" }}>Ziad's Plants</h3>
                 <i style={{ color: "white" }}>Where Green Meets Serenity</i>
               </div>
             </a>
@@ -320,6 +331,16 @@ function ProductList() {
             {" "}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
               <h1 className="cart">
+                <label
+                  style={{
+                    zIndex: 1,
+                    position: "fixed",
+                    fontSize: "1.5rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  {totalItems()}
+                </label>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 256 256"
@@ -327,7 +348,7 @@ function ProductList() {
                   height="68"
                   width="68"
                 >
-                  <rect width="156" height="156" fill="none"></rect>
+                  0<rect width="156" height="156" fill="none"></rect>
                   <circle cx="80" cy="216" r="12"></circle>
                   <circle cx="184" cy="216" r="12"></circle>
                   <path
@@ -350,6 +371,7 @@ function ProductList() {
           <br></br>
           {plantsArray.map((item) => (
             <div className="mainCategoryDiv">
+              {" "}
               <h1>{item.category}</h1>
               <div className="product-list">
                 {item.plants.map((plant) => (
@@ -363,8 +385,20 @@ function ProductList() {
                     <p>{plant.description}</p>
                     <p>{plant.cost}</p>
                     <button
+                      style={{
+                        backgroundColor: alreadyInCart(plant.name)
+                          ? "gray"
+                          : "#615EFC",
+                      }}
+                      disabled={alreadyInCart(plant.name) ? true : false}
+                      onClick={() =>
+                        handleAddToCart({
+                          name: plant.name,
+                          cost: plant.cost,
+                          image: plant.image,
+                        })
+                      }
                       className="product-button"
-                      onClick={() => handleAddToCart(plant)}
                     >
                       Add to Cart
                     </button>
