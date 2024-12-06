@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem } from "./CartSlice";
+import { addItem } from "./CreateSlice";
 function ProductList(props) {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
@@ -265,7 +265,7 @@ function ProductList(props) {
     },
   ];
   const styleObj = {
-    backgroundColor: "#4caf50",
+    backgroundColor: "#615EFC",
     color: "#fff!important",
     padding: "15px",
     display: "flex",
@@ -313,7 +313,7 @@ function ProductList(props) {
               alt=""
             />
             <a style={{ textDecoration: "none" }}>
-              <div style={{ margin: "10px" }}>
+              <div>
                 <h3 style={{ color: "white" }}>Ziad's Plants</h3>
                 <i style={{ color: "white" }}>Where Green Meets Serenity</i>
               </div>
